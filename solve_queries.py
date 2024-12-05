@@ -21,7 +21,7 @@ def main():
             yaml.dump(data, file_stream)
 
     # start the docker container
-    container_id = subprocess.check_output("docker run --platform linux/amd64 -it --rm -v $PWD:$PWD -w $PWD -d zupermind/mcdp:2024 bash -l", shell=True).decode().strip()
+    container_id = subprocess.check_output("docker run -it --rm -v $PWD:$PWD -w $PWD -d zupermind/mcdp:2024 bash -l", shell=True).decode().strip()
     print(f"Container ID: {container_id}")
 
     # run mcdp solver for a specific query
@@ -29,7 +29,7 @@ def main():
     subprocess.run(f"docker exec {container_id} mcdp-solve-query {query}", shell=True, check=True)
 
     # read the output file and parse the results. Pay attention to which output file you are reading!
-    with open("out/out-000/output.yaml", 'r', encoding="UTF-8") as file_stream:
+    with open("out-query/output.yaml", 'r', encoding="UTF-8") as file_stream:
         data = yaml.safe_load(file_stream)
         optimistic_antichain = eval(data['optimistic']['minimals'])
         print("Optimistic antichain:")
